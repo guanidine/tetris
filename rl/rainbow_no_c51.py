@@ -627,7 +627,7 @@ class DQNAgent:
 
     def step(
             self, action: np.ndarray,
-            render: bool = True,
+            render: bool = False,
             video: cv2.VideoWriter = None
     ) -> Tuple[np.float64, bool]:
         """采取动作并更新环境。
@@ -709,12 +709,18 @@ class DQNAgent:
 
         return loss.item()
 
-    def train(self, num_episodes: int, plotting_interval: int = 1000):
+    def train(
+            self,
+            num_episodes: int,
+            plotting_interval: int = 1000,
+            render: bool = False
+    ):
         """训练agent。
 
         Args:
             num_episodes: 迭代次数
             plotting_interval: 多少轮迭代输出一次训练图像
+            render: 是否输出游戏画面
         """
         self.is_test = False
 
@@ -733,7 +739,7 @@ class DQNAgent:
             next_state = next_states[action, :]
             action = next_actions[action]
 
-            reward, done = self.step(action)
+            reward, done = self.step(action, render=render)
 
             # NoisyNet: removed decrease of epsilon
 

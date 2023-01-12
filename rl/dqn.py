@@ -253,12 +253,18 @@ class DQNAgent:
 
         return loss.item()
 
-    def train(self, num_episodes: int, plotting_interval: int = 1000):
+    def train(
+            self,
+            num_episodes: int,
+            plotting_interval: int = 1000,
+            render: bool = False
+    ):
         """训练agent。
 
         Args:
             num_episodes: 迭代次数
             plotting_interval: 多少轮迭代输出一次训练图像
+            render: 是否输出游戏画面
         """
         self.is_test = False
 
@@ -278,7 +284,7 @@ class DQNAgent:
             next_state = next_states[action, :]
             action = next_actions[action]
 
-            reward, done = self.step(action)
+            reward, done = self.step(action, render=render)
 
             # 等回放数组中有足够多的四元组时，才开始做经验回放更新 DQN
             if len(self.memory) >= self.batch_size:
