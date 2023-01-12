@@ -280,19 +280,6 @@ class DQNAgent:
 
             reward, done = self.step(action)
 
-            # 回合结束，重置环境，记录得分
-            if done:
-                score = self.env.score
-                final_tetrominoes = self.env.tetrominoes
-                final_cleared_lines = self.env.cleared_lines
-                state = self.env.reset()
-                scores.append(score)
-            else:
-                state = next_state
-                continue
-
-            episode += 1
-
             # 等回放数组中有足够多的四元组时，才开始做经验回放更新 DQN
             if len(self.memory) >= self.batch_size:
                 loss = self.update_model()
@@ -310,6 +297,19 @@ class DQNAgent:
                 # 目标网络硬更新
                 if update_cnt % self.target_update == 0:
                     self._target_hard_update()
+
+            # 回合结束，重置环境，记录得分
+            if done:
+                score = self.env.score
+                final_tetrominoes = self.env.tetrominoes
+                final_cleared_lines = self.env.cleared_lines
+                state = self.env.reset()
+                scores.append(score)
+            else:
+                state = next_state
+                continue
+
+            episode += 1
 
             print("Epoch: {}/{}, Score: {}, Tetrominoes {}, Cleared lines: {}".format(
                 episode,

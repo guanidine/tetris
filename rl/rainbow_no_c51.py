@@ -741,6 +741,16 @@ class DQNAgent:
             fraction = min(episode / num_episodes, 1.0)
             self.beta = self.beta + fraction * (1.0 - self.beta)
 
+            # if training is ready
+            if len(self.memory) >= self.batch_size:
+                loss = self.update_model()
+                losses.append(loss)
+                update_cnt += 1
+
+                # if hard update is needed
+                if update_cnt % self.target_update == 0:
+                    self._target_hard_update()
+
             # if episode ends
             if done:
                 score = self.env.score
@@ -753,16 +763,6 @@ class DQNAgent:
                 continue
 
             episode += 1
-
-            # if training is ready
-            if len(self.memory) >= self.batch_size:
-                loss = self.update_model()
-                losses.append(loss)
-                update_cnt += 1
-
-                # if hard update is needed
-                if update_cnt % self.target_update == 0:
-                    self._target_hard_update()
 
             print("Epoch: {}/{}, Score: {}, Tetrominoes {}, Cleared lines: {}".format(
                 episode,

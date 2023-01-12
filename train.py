@@ -37,4 +37,4 @@ if __name__ == "__main__":
     # train
     agent = DQNAgent(env, memory_size, batch_size, target_update)
 
-    agent.train(num_episodes)
+    agent.train(num_episodes, 100)
